@@ -12,18 +12,15 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api")
 @Service
-@CrossOrigin(origins = "https://jasperho1228.github.io")
+@CrossOrigin(origins = "https://jasperho1228.github.io/MyPortfolio/")
 public class EmailController {
-
     @Autowired
     private JavaMailSender javaMailSender;
     private EmailRequest request;
 
-
     public EmailController(
                         JavaMailSender javaMailSender){
         this.javaMailSender = javaMailSender;
-
     }
     @PostMapping("/send-email")
     public ResponseEntity<String> sendEmail(@RequestBody EmailRequest request) {
