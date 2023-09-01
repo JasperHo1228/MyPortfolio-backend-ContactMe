@@ -9,7 +9,4 @@ public class MyPortfolioBackendApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(MyPortfolioBackendApplication.class, args);
 	}
-	public void run(String... args) throws Exception{
-
-	}
 }

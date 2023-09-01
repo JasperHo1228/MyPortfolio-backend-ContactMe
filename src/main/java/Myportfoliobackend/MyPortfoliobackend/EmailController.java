@@ -18,8 +18,7 @@ public class EmailController {
     @Autowired
     private JavaMailSender javaMailSender;
     private EmailRequest request;
-    @Value("${RECIPIENT_EMAIL}")
-    private String recipientEmail;
+
 
     public EmailController(
                         JavaMailSender javaMailSender){
@@ -38,7 +37,7 @@ public class EmailController {
                           + request.getSubject();
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(recipientEmail);
+        mailMessage.setTo("tsunyinho1996@gmail.com");
         mailMessage.setSubject(subject);
         mailMessage.setText(message);
 
