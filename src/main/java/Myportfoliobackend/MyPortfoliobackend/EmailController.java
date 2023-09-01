@@ -22,7 +22,7 @@ public class EmailController {
     @PostMapping("/send-email")
     public ResponseEntity<String> sendEmail(@RequestBody EmailRequest request) {
         String sender = request.getSender(); // Replace with your email address
-        String subject = request.getName() + " send you a message from your portfolio";
+        String name = request.getName() + " send you a message from your portfolio";
         String message = "Hi Jasper,\n\n"
                           + request.getMessage() +
                           "\n\nIf you are interested, please feel welcome to reach out to me at my email " +
@@ -32,7 +32,7 @@ public class EmailController {
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo("tsunyinho1996@gmail.com");
-        mailMessage.setSubject(subject);
+        mailMessage.setSubject(name);
         mailMessage.setText(message);
 
         try {
