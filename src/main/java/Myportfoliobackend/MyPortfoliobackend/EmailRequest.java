@@ -1,26 +1,26 @@
 package Myportfoliobackend.MyPortfoliobackend;
 
 public class EmailRequest {
-    private String recipient;
-    private String subject;
+    private String sender;
+    private String name;
     private String message;
 
     // Getters and setters
 
-    public String getRecipient() {
-        return recipient;
+    public String getSender() {
+        return sender;
     }
 
     public void setSender(String sender) {
-        this.recipient = sender;
+        this.sender = sender;
     }
 
-    public String getSubject() {
-        return subject;
+    public String getName() {
+        return name;
     }
 
-    public void setSubject(String subject) {
-        this.subject = subject;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getMessage() {

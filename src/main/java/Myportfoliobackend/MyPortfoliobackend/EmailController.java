@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api")
 @Service
-@CrossOrigin(origins = "https://myportfolio-n862.onrender.com/")
+@CrossOrigin(origins = "https://myportfolio-n862.onrender.com")
 public class EmailController {
     @Autowired
     private final JavaMailSender javaMailSender;
@@ -21,14 +21,14 @@ public class EmailController {
     }
     @PostMapping("/send-email")
     public ResponseEntity<String> sendEmail(@RequestBody EmailRequest request) {
-        String recipient = request.getRecipient(); // Replace with your email address
-        String subject = request.getSubject() + " send you a message from your portfolio";
+        String sender = request.getSender(); // Replace with your email address
+        String subject = request.getName() + " send you a message from your portfolio";
         String message = "Hi Jasper,\n\n"
                           + request.getMessage() +
                           "\n\nIf you are interested, please feel welcome to reach out to me at my email " +
-                            recipient+
+                            sender +
                           "\n\nKind regards,\n\n"
-                          + request.getSubject();
+                          + request.getName();
 
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo("tsunyinho1996@gmail.com");
