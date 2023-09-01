@@ -1,7 +1,6 @@
 package Myportfoliobackend.MyPortfoliobackend;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
@@ -12,14 +11,12 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api")
 @Service
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "https://myportfolio-n862.onrender.com/")
 public class EmailController {
     @Autowired
-    private JavaMailSender javaMailSender;
-    private EmailRequest request;
+    private final JavaMailSender javaMailSender;
 
-    public EmailController(
-                        JavaMailSender javaMailSender){
+    public EmailController(JavaMailSender javaMailSender){
         this.javaMailSender = javaMailSender;
     }
     @PostMapping("/send-email")
