@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api")
 @Service
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://jasperho1228.github.io/MyPortfolio/")
 public class EmailController {
 
     @Autowired
