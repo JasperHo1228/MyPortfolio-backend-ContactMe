@@ -1,3 +1,3 @@
 # MyPortfolio-backend-ContactMe
 
-This Backend email system is to link it to myPortfolio react app. 
+This is a very simple backend email system which linked to myPortfolio react app. 
