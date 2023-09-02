@@ -2,10 +2,14 @@ package Myportfoliobackend.MyPortfoliobackend;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,9 +27,19 @@ public class EmailController {
     public EmailController(JavaMailSender javaMailSender){
         this.javaMailSender = javaMailSender;
     }
+    @Bean
+    public TaskExecutor taskExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(5);
+        executor.setMaxPoolSize(10);
+        executor.setQueueCapacity(25);
+        return executor;
+    }
+
     @PostMapping("/send-email")
+    @Async("taskExecutor")
     public ResponseEntity<String> sendEmail(@RequestBody EmailRequest request) {
-        String sender = request.getSender(); // Replace with your email address
+        String sender = request.getSender();
         String name = request.getName();
         String message = "Hi Jasper,\n\n"
                           + request.getMessage() +
