@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api")
 @Service
-@CrossOrigin(origins = "https://myportfolio-n862.onrender.com")
+@CrossOrigin(origins = "${FRONTEND_URL}")
 public class EmailController {
     @Autowired
     private final JavaMailSender javaMailSender;
