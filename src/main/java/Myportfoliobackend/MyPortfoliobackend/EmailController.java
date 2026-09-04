@@ -1,64 +1,68 @@
 package Myportfoliobackend.MyPortfoliobackend;
 
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
-import org.springframework.core.task.TaskExecutor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.InetSocketAddress;
 import java.net.Socket;
+import com.resend.Resend;
+import com.resend.core.exception.ResendException;
+import com.resend.services.emails.model.CreateEmailOptions;
+import com.resend.services.emails.model.CreateEmailResponse;
 
 @RestController
 @RequestMapping("/api")
 @CrossOrigin(origins = "${FRONTEND_URL}")
 public class EmailController {
-    @Autowired
-    private final JavaMailSender javaMailSender;
 
-    @Value("${spring.mail.username}")
-    private String defaultEmail;
+    private final Resend resend;
 
-    public EmailController(JavaMailSender javaMailSender){
-        this.javaMailSender = javaMailSender;
-    }
-    @Bean
-    public TaskExecutor taskExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(5);
-        executor.setMaxPoolSize(10);
-        executor.setQueueCapacity(25);
-        return executor;
+    @Value("${resend.api-key}")
+    private String resendApiKey;
+
+    @Value("${resend.to-email}")
+    private String toEmail;
+
+    public EmailController() {
+        this.resend = null;
     }
 
     @PostMapping("/send-email")
-    public ResponseEntity<String> sendEmail(@RequestBody EmailRequest request) {
+    public ResponseEntity<String> sendEmail(@RequestBody EmailRequest request)
+    {
         String sender = request.getSender();
         String name = request.getName();
-        String message = "Hi Jasper,\n\n"
-                          + request.getMessage() +
-                          "\n\nIf you are interested, please feel welcome to reach out to me at my email " +
-                            sender +
-                          "\n\nKind regards,\n\n"
-                          + name;
-        String subject = name + " send you a message from your portfolio";
+        String message =
+                "Hi Jasper,\n\n"
+                        + request.getMessage()
+                        + "\n\nIf you are interested, please feel welcome to reach out to me at my email "
+                        + sender
+                        + "\n\nKind regards,\n\n"
+                        + name;
+        String subject = name + " sent you a message from your portfolio";
 
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(defaultEmail);
-        mailMessage.setSubject(subject);
-        mailMessage.setText(message);
+        try
+        {
+            Resend resend = new Resend(resendApiKey);
 
-        try {
-            javaMailSender.send(mailMessage);
+            CreateEmailOptions params = CreateEmailOptions.builder()
+                    .from(sender)
+                    .to(toEmail)
+                    .subject(subject)
+                    .text(message)
+                    .build();
+
+            resend.emails().send(params);
+
             return ResponseEntity.ok("Email sent successfully.");
-
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+        }
+        catch (Exception e)
+        {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error sending email: " + e.getMessage());
         }
     }
@@ -74,5 +78,35 @@ public class EmailController {
             return "SMTP connection failed: " + e.getMessage();
         }
     }
+
+    @PostMapping("/test-resend")
+    public ResponseEntity<String> testResend() {
+
+        String apiKey = System.getenv("RESEND_API_KEY");
+
+        Resend resend = new Resend(apiKey);
+
+        CreateEmailOptions params = CreateEmailOptions.builder()
+                .from("onboarding@resend.dev")
+                .to(toEmail)
+                .subject("Test from my portfolio")
+                .html("<h1>Hello!</h1><p>Resend is working!</p>")
+                .build();
+
+        try
+        {
+            CreateEmailResponse response = resend.emails().send(params);
+
+            return ResponseEntity.ok(
+                    "Email sent successfully. ID: " + response.getId()
+            );
+        }
+        catch (ResendException e)
+        {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Resend error: " + e.getMessage());
+        }
+    }
+
 }
 
