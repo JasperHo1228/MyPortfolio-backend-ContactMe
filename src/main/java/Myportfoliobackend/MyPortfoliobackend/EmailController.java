@@ -20,11 +20,11 @@ public class EmailController {
 
     private final Resend resend;
 
-    @Value("${RESEND_API_KEY}")
+    @Value("${resend.api-key}")
     private String resendApiKey;
 
-    @Value("${MAIL_USERNAME}")
-    private String defaultEmail;
+    @Value("${resend.to-email}")
+    private String toEmail;
 
     public EmailController() {
         this.resend = null;
@@ -50,7 +50,7 @@ public class EmailController {
 
             CreateEmailOptions params = CreateEmailOptions.builder()
                     .from(sender)
-                    .to(defaultEmail)
+                    .to(toEmail)
                     .subject(subject)
                     .text(message)
                     .build();
@@ -88,7 +88,7 @@ public class EmailController {
 
         CreateEmailOptions params = CreateEmailOptions.builder()
                 .from("onboarding@resend.dev")
-                .to(defaultEmail)
+                .to(toEmail)
                 .subject("Test from my portfolio")
                 .html("<h1>Hello!</h1><p>Resend is working!</p>")
                 .build();
