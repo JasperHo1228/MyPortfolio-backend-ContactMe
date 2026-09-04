@@ -8,14 +8,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.InetSocketAddress;
+import java.net.Socket;
 
 @RestController
 @RequestMapping("/api")
-@Service
 @CrossOrigin(origins = "${FRONTEND_URL}")
 public class EmailController {
     @Autowired
@@ -37,7 +37,6 @@ public class EmailController {
     }
 
     @PostMapping("/send-email")
-    @Async("taskExecutor")
     public ResponseEntity<String> sendEmail(@RequestBody EmailRequest request) {
         String sender = request.getSender();
         String name = request.getName();
@@ -61,6 +60,18 @@ public class EmailController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error sending email: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/test-smtp")
+    public String testSmtp() {
+        try {
+            Socket socket = new Socket();
+            socket.connect(new InetSocketAddress("smtp.gmail.com", 587), 5000);
+            socket.close();
+            return "SMTP connection successful";
+        } catch (Exception e) {
+            return "SMTP connection failed: " + e.getMessage();
         }
     }
 }
