@@ -26,6 +26,9 @@ public class EmailController {
     @Value("${resend.to-email}")
     private String toEmail;
 
+    @Value("${resend.domain}")
+    private String domain;
+
     public EmailController() {
         this.resend = null;
     }
@@ -49,8 +52,9 @@ public class EmailController {
             Resend resend = new Resend(resendApiKey);
 
             CreateEmailOptions params = CreateEmailOptions.builder()
-                    .from(sender)
+                    .from(domain)
                     .to(toEmail)
+                    .replyTo(sender)
                     .subject(subject)
                     .text(message)
                     .build();
